@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 import { DashboardLayout } from "../layout/DashboardLayout";
 import { LeadFilters } from "../leads/LeadFilters";
 import { LeadForm } from "../leads/LeadForm";
@@ -32,6 +34,7 @@ const defaultFilters: LeadFiltersType = {
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+
   const token = localStorage.getItem("smart_leads_token");
   const isLoggedIn = Boolean(token);
 
@@ -93,6 +96,7 @@ export const Dashboard = () => {
   ]);
 
   const redirectToLogin = () => {
+    toast.error("Please login to continue.");
     navigate("/login");
   };
 
@@ -108,14 +112,17 @@ export const Dashboard = () => {
 
       if (selectedLead) {
         await updateLead(selectedLead._id, payload);
+        toast.success("Lead updated successfully");
       } else {
         await createLead(payload);
+        toast.success("Lead created successfully");
       }
 
       setSelectedLead(null);
       await fetchLeads();
     } catch {
       setError("Failed to save lead. Please check the details and try again.");
+      toast.error("Failed to save lead");
     } finally {
       setFormLoading(false);
     }
@@ -132,10 +139,15 @@ export const Dashboard = () => {
 
     try {
       setError("");
+
       await deleteLead(id);
+
+      toast.success("Lead deleted successfully");
+
       await fetchLeads();
     } catch {
       setError("Failed to delete lead. Please try again.");
+      toast.error("Failed to delete lead");
     }
   };
 
@@ -146,10 +158,16 @@ export const Dashboard = () => {
     }
 
     try {
+      setError("");
+
       const blob = await exportLeadsCsv();
+
       downloadCsv(blob, "smart-leads.csv");
+
+      toast.success("CSV exported successfully");
     } catch {
       setError("Failed to export CSV. Please try again.");
+      toast.error("Failed to export CSV");
     }
   };
 
@@ -159,7 +177,7 @@ export const Dashboard = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Leads Dashboard</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Manage, filter, and export your sales leads.
+            Manage, filter, and export your sales leads securely.
           </p>
         </div>
 
@@ -169,7 +187,7 @@ export const Dashboard = () => {
       </div>
 
       {!isLoggedIn && (
-        <div className="mb-5 rounded-2xl bg-blue-50 p-4 text-sm text-blue-700">
+        <div className="mb-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-700">
           Login to create leads, export CSV, and view your private lead data.
         </div>
       )}
@@ -196,6 +214,7 @@ export const Dashboard = () => {
           <>
             <LeadTable
               leads={leads}
+              isLoggedIn={isLoggedIn}
               onEdit={(lead) => {
                 if (!isLoggedIn) {
                   redirectToLogin();
