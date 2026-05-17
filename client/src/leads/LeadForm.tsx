@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import type { Lead, LeadPayload, LeadSource, LeadStatus } from "../types/lead.types";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
