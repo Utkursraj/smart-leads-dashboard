@@ -9,7 +9,7 @@ This project was developed as part of the Full Stack Development Internship Assi
 # Live Demo
 
 ## Frontend
-[Live Frontend URL]
+https://smart-leads-dashboard-ppkw.onrender.com
 
 ## Backend
 https://smart-leads-dashboard-backend.onrender.com
